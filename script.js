@@ -15,7 +15,7 @@
 
  const games = [];
 
-
+// TODO:
  /**
   * Byrjar leikinn okkar með því að kalla í play().
   * Eftir að play() klárar þá er boðið notandanum að spila annann leik með confirm()
@@ -30,13 +30,14 @@ function start() {
 
 }
 
+// TODO:
 /**
  * Spilar einn leik. Sér um að:
  *  - Velja tölu af handahófi í byrjun með randomNumber()
  *  - Biðja notanda um tölu með prompt()
  *  - Vinna úr inntaki frá notanda með parseGuess()
  *  - Láta vita hversu nálægt eða rétt gisk er með getResponse() og alert()
- *  - Haldautan um fjölda ágiskana
+ *  - Halda utan um fjölda ágiskana
  *  - Vista fjölda ágiskana í "games" fylki þegar búið er að giska rétt
  *
  * Ef notandi ýtir á cancel þegar beðið er um ágiskun skal hætta í leik en ekki vista ágiskanir
@@ -46,11 +47,12 @@ function start() {
  */
 function play() {
   const random = randomNumber(1,100);
-  input = prompt("Veldu tölu milli 1 og 100");
-  inputParsed = parseInt(input)
-
+  let input = prompt("Veldu tölu milli 1 og 100");
+  const inputParsed = parseGuess(input);
+  alert(getResponse(parsedInput, random));
 }
 
+// TODO:
 /**
  * Skilar niðurstöðum um spilaða leiki sem streng.
  * Fjöldi leikja er skilað ásamt meðalfjölda giska, t.d.:
@@ -64,6 +66,7 @@ function getResults(){
 
 }
 
+// TODO:
 /**
  * Reiknar út og skilar meðal ágiskunum í öllum leikjum sem geymdir eru í
  * global breytu "games". Skilar gildi með tveim aukastöfum.
@@ -81,9 +84,15 @@ function calculateAverage(){
  * Ef ekki er hægt að ná tölu úr input er skilað null
  */
 function parseGuess(input){
-
+  parsedInput = parseInt(input);
+  if (Number.isNaN(parsedInput)) {
+    return null;
+  } else {
+    return parsedInput;
+  }
 }
 
+// TODO:
 /**
  * Skilar svari sem birta á notanda sem streng, tekur inn tvær breytur
  *  - guess sem tölu, ágiskun notanda
@@ -100,7 +109,22 @@ function parseGuess(input){
  * Math.abs skilar algildi tölu: |a| = Math.abs(a)
  */
 function getResponse(guess, correct){
-  return 'Ekki rétt';
+  diff = Math.abs(correct-guess);
+  if (guess < 0) {
+    return 'Ekki rétt';
+  } else if (diff = 0) {
+    return 'Rétt';
+  } else if (diff < 5) {
+    return 'Mjög nálægt';
+  } else if (diff < 10) {
+    return 'Nálægt';
+  } else if (diff < 20) {
+    return 'Frekar langt frá';
+  } else if (diff < 50) {
+    return 'Langt frá';
+  } else {
+    return 'Mjög langt frá';
+  }
 }
 
 /**

@@ -27,7 +27,7 @@ function start() {
   do {
     play();
   }    while(confirm("Viltu spila annan leik?"))
-
+  alert(getResults);
 }
 
 // TODO:
@@ -47,9 +47,20 @@ function start() {
  */
 function play() {
   const random = randomNumber(1,100);
-  let input = prompt("Veldu tölu milli 1 og 100");
-  const inputParsed = parseGuess(input);
-  alert(getResponse(parsedInput, random));
+  console.log(random);
+  guesses = 0;
+  correct = false;
+  // let input = "";
+  do  {
+    input = prompt("Giskaðu á tölu milli 1 og 100");
+    if (isNaN(input)) {
+      break;
+    }
+    inputParsed = parseGuess(input);
+    alert(`answer: ${random}, ${getResponse(parsedInput, random)}, diff: ${diff}`);
+    guesses++;
+  } while (correct == false)
+  games.push(guesses)
 }
 
 // TODO:
@@ -63,7 +74,11 @@ function play() {
  *    "Þú spilaðir engann leik >_<"
  */
 function getResults(){
-
+  if (games === undefined || games.length == 0) {
+    return "Þú spilaðir engan leik >_<";
+  } else {
+    return `Þú spilaðir ${games.length} leiki.\nMeðalfjöldi ágiskana var ${avgGuessesTrunc}`;
+  }
 }
 
 // TODO:
@@ -76,7 +91,8 @@ function getResults(){
  * þarf að útfæra með lykkju.
  */
 function calculateAverage(){
-
+  avgGuesses = games.reduce((a, b) => a + b, 0) / games.length
+  avgGuessesTrunc = avgGuesses.toFixes(2);
 }
 
 /**
@@ -111,8 +127,9 @@ function parseGuess(input){
 function getResponse(guess, correct){
   diff = Math.abs(correct-guess);
   if (guess < 0) {
+    correct = true;
     return 'Ekki rétt';
-  } else if (diff = 0) {
+  } else if (diff == 0) {
     return 'Rétt';
   } else if (diff < 5) {
     return 'Mjög nálægt';

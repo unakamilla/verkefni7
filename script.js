@@ -27,7 +27,7 @@ function start() {
   do {
     play();
   }    while(confirm("Viltu spila annan leik?"))
-  alert(getResults);
+  alert(getResults());
 }
 
 // TODO:
@@ -47,23 +47,25 @@ function start() {
  */
 function play() {
   const random = randomNumber(1,100);
-  console.log(random);
   guesses = 0;
-  correct = false;
-  // let input = "";
+  guessedRight = false;
   do  {
     input = prompt("Giskaðu á tölu milli 1 og 100");
-    if (isNaN(input)) {
+    if (input == null) {
+      alert("Hætt í leik");
       break;
     }
     inputParsed = parseGuess(input);
-    alert(`answer: ${random}, ${getResponse(parsedInput, random)}, diff: ${diff}`);
+    while (inputParsed == null) {
+      input = prompt("Þetta var ekki tala. Sláðu inn tölu milli 1 og 100.");
+      inputParsed = parseGuess(input);
+    }
+    alert(`answer: ${random}, ${getResponse(inputParsed, random)}, diff: ${diff}`);
     guesses++;
-  } while (correct == false)
-  games.push(guesses)
+  } while (guessedRight == false)
+  games.push(guesses);
 }
 
-// TODO:
 /**
  * Skilar niðurstöðum um spilaða leiki sem streng.
  * Fjöldi leikja er skilað ásamt meðalfjölda giska, t.d.:
@@ -77,11 +79,10 @@ function getResults(){
   if (games === undefined || games.length == 0) {
     return "Þú spilaðir engan leik >_<";
   } else {
-    return `Þú spilaðir ${games.length} leiki.\nMeðalfjöldi ágiskana var ${avgGuessesTrunc}`;
+    return `Þú spilaðir ${games.length} leiki.\nMeðalfjöldi ágiskana var ${calcAverage()}`;
   }
 }
 
-// TODO:
 /**
  * Reiknar út og skilar meðal ágiskunum í öllum leikjum sem geymdir eru í
  * global breytu "games". Skilar gildi með tveim aukastöfum.
@@ -90,9 +91,10 @@ function getResults(){
  *
  * þarf að útfæra með lykkju.
  */
-function calculateAverage(){
+function calcAverage(){
   avgGuesses = games.reduce((a, b) => a + b, 0) / games.length
-  avgGuessesTrunc = avgGuesses.toFixes(2);
+  avgGuessesTrunc = avgGuesses.toFixed(2);
+  return avgGuessesTrunc;
 }
 
 /**
@@ -127,9 +129,9 @@ function parseGuess(input){
 function getResponse(guess, correct){
   diff = Math.abs(correct-guess);
   if (guess < 0) {
-    correct = true;
     return 'Ekki rétt';
   } else if (diff == 0) {
+    guessedRight = true;
     return 'Rétt';
   } else if (diff < 5) {
     return 'Mjög nálægt';
